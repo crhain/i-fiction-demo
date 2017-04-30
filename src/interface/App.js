@@ -1,38 +1,35 @@
 //import React, { Component } from 'react';
 import React from 'react';
 import './App.css';
-
+import Display from './display/Display.js';
+import MainMenu from './main-menu/MainMenu.js';
 
 class App extends React.Component {
   constructor(props){
     super(props);
     this.textBuffer = ["Hi<br/>"];
-    this.display;
     this.index = 1;    
     this.state = {
       display: this.textBuffer.join('')
     };
-    this.addButtonHandler = this.addButtonHandler.bind(this);
+    this.game = this.props.game;
+    this.mainButtonClickHandler = this.mainButtonClickHandler.bind(this);
+
 
   }//end of constructor
   render() {
     return (
-      <div className="App">        
-        <div id="display" 
-              ref={(display)=>{this.display = display}}
-              dangerouslySetInnerHTML={{__html: this.state.display}}>
-        </div>
-        <div id="menu">
-              <button id="add" onClick={this.addButtonHandler}>ADD</button>
-              <button></button>
-              <button></button>
-              <button></button>
-        </div>                
+      <div className="App">              
+        <Display 
+            text={{__html: this.state.display}}
+            getElementFromDOM={element => this.display = element}
+        />
+        <MainMenu clickHandler={this.mainButtonClickHandler}/>                    
       </div>
     );
   } //end of render()
-  addButtonHandler(){     
-    console.log('click');
+  mainButtonClickHandler(){     
+    console.log(this.game.name);
     this.addText("You enter a very interesting space... it's known as the react behaves crazy space." + this.index++ + "<br/>" );        
   }
   addText(text){
@@ -47,8 +44,7 @@ class App extends React.Component {
           //this sets elements scrollTop value in order to scroll it down to bring overflow content into view
           display.scrollTop = scrollDiff;
       }
-    }, 250);
-    
+    }, 250);    
   }
 
 
