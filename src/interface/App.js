@@ -6,13 +6,14 @@ import MainMenu from './main-menu/MainMenu.js';
 
 class App extends React.Component {
   constructor(props){
-    super(props);
-    this.textBuffer = ["Hi<br/>"];
-    this.index = 1;    
+    super(props);    
     this.state = {
-      display: this.textBuffer.join('')
-    };
-    this.game = this.props.game;
+      display: "",
+      actions: []
+    };    
+    this.game = this.props.game; //import game engine through props
+    this.actions = [];
+    this.startButtonClickHandler = this.startButtonClickHandler.bind(this);
     this.mainButtonClickHandler = this.mainButtonClickHandler.bind(this);
 
 
@@ -24,19 +25,31 @@ class App extends React.Component {
             text={{__html: this.state.display}}
             getElementFromDOM={element => this.display = element}
         />
-        <MainMenu clickHandler={this.mainButtonClickHandler}/>                    
+        <MainMenu 
+          startButtonClickHandler={this.startButtonClickHandler}
+          mainButtonClickHandler={this.mainButtonClickHandler}
+          actions={ this.state.actions }
+        />                    
       </div>
     );
   } //end of render()
-  mainButtonClickHandler(){     
-    console.log(this.game.name);
-    this.addText("You enter a very interesting space... it's known as the react behaves crazy space." + this.index++ + "<br/>" );        
+  startButtonClickHandler(event){
+    let results = this.game.start();
+    console.log('Add these results in app.js');         
+    console.log(results);
+    this.addTextToDisplay(results.text + "<br/>" );
+    this.addActionsToMain(results.actions);        
   }
-  addText(text){
+  mainButtonClickHandler(event){
+    let results = this.game.doAction({action: 'continue'});
+    console.log(results);
+    this.addTextToDisplay(results.text + "<br/>");
+    this.addActionsToMain(results.actions);    
+  }
+  addTextToDisplay(text){
     let display = this.display;
-    this.textBuffer.push(text);
     this.setState((prevState, props)=>({
-      display: this.textBuffer.join('')
+      display: text
     }));
     setTimeout(()=>{
       let scrollDiff = display.scrollHeight + 4 - display.offsetHeight;    
@@ -45,6 +58,12 @@ class App extends React.Component {
           display.scrollTop = scrollDiff;
       }
     }, 250);    
+  }
+
+  addActionsToMain(actions){
+    console.log('setting main actions to:');
+    console.log(actions);
+    this.setState((prevState, props) =>({ actions: actions }));    
   }
 
 
