@@ -13,13 +13,13 @@
 
 #popup-header{
     width: 100%;
-    height: 65px;
+    height: 20px;
     background-color: white;
     text-align: center;
 }
 
-.btn-header{
-    width: 50%;
+#popup-nav-bar{
+    width: 100%;
     height: 50px;
-    outline: none;    
+    background-color: white;
 }

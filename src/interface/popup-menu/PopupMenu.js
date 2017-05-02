@@ -8,9 +8,7 @@ function PopupMenu(props){
     return (        
         <div id="popup-menu" className={menuClasses}>
             <div id="popup-header">
-                <div>Title</div>
-                <HeaderNavButton id={"btn-nav-back"} label={"Back"} />
-                <HeaderNavButton id={"btn-nav-close"} label={"Close"} clickHandler={props.closeButtonClickHandler}/>                
+                <h3>Title</h3>                
             </div>
             <Button/>
             <Button/>                                                
@@ -18,7 +16,11 @@ function PopupMenu(props){
             <Button/>
             <Button/>
             <Button/>
-            <Button/>                                                                                                                                                                                                                                                                                               
+            <Button/>
+            <div id="popup-nav-bar">
+                <HeaderNavButton id={"btn-nav-back"} label={"Back"} />
+                <HeaderNavButton id={"btn-nav-close"} label={"Close"} clickHandler={props.closeButtonClickHandler}/>                
+            </div>                                                                                                                                                                                                                                                                                               
         </div>    
     );
 }
