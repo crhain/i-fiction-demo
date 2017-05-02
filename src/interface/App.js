@@ -20,7 +20,10 @@ class App extends React.Component {
   }//end of constructor
   render() {
     return (
-      <div className="App">              
+      <div className="App">
+        <div id="title">
+          <h2>I-Fiction: A Fury's Adventure</h2>
+        </div>                
         <Display 
             text={{__html: this.state.display}}
             getElementFromDOM={element => this.display = element}

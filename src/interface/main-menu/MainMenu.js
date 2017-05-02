@@ -11,10 +11,11 @@ function MainMenu(props){
 
     return (        
         <div id="menu">
+              
+              <button id="navigation" onClick={props.mainButtonClickHandler}>Navigation</button>
+              <button id="props">Items</button>
+              <button id="characters">Characters</button>
               <button id="start" onClick={props.startButtonClickHandler}>Start</button>
-              <button id="continue" onClick={props.mainButtonClickHandler}>Continue</button>
-              <button id={ buttonThree.command }>{ buttonThree.action }</button>
-              <button id={ buttonFour.command }>{ buttonFour.action }</button>
         </div>    
     );
 }

@@ -2,3 +2,11 @@
     position: relative;
     box-sizing: border-box;
 }
+
+#title {
+    background-color: #E8E6BF;
+    border: 1px solid black;
+}
+#title h2{
+    text-align: center;
+}
