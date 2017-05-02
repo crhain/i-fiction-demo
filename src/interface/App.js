@@ -3,6 +3,7 @@ import React from 'react';
 import './App.css';
 import Display from './display/Display.js';
 import NavMenu from './nav-menu/NavMenu.js';
+import PopupMenu from './popup-menu/PopupMenu.js';
 
 class App extends React.Component {
   constructor(props){
@@ -20,19 +21,20 @@ class App extends React.Component {
   }//end of constructor
   render() {
     return (
-      <div className="App">
+      <div id="app" className="App">
         <div id="title">
           <h2>I-Fiction: A Fury's Adventure</h2>
-        </div>                
+        </div>
+        <PopupMenu />                
         <Display 
             text={{__html: this.state.display}}
             getElementFromDOM={element => this.display = element}
-        />
+        />        
         <NavMenu 
           startButtonClickHandler={this.startButtonClickHandler}
           mainButtonClickHandler={this.mainButtonClickHandler}
           actions={ this.state.actions }
-        />                    
+        />                            
       </div>
     );
   } //end of render()

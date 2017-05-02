@@ -1,0 +1,19 @@
+#popup-menu{
+    position: absolute;
+    width: 100%;   /*Same size as #display*/
+    height: 435px; /*Same size as #display*/
+    background-color: white;
+    z-index: -1;
+}
+
+#popup-header{
+    width: 100%;
+    height: 50px;
+    background-color: gray;
+}
+
+.btn-header{
+    width: 50%;
+    height: 50px;
+    outline: none;    
+}

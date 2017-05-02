@@ -3,6 +3,10 @@
     box-sizing: border-box;
 }
 
+body {
+    background-color: black;
+}
+
 #title {
     background-color: #E8E6BF;
     border: 1px solid black;
