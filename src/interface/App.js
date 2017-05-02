@@ -14,6 +14,7 @@ class App extends React.Component {
       actions: []
     };    
     this.game = this.props.game; //import game engine through props
+    this.isPopupClosing = false;
     this.actions = [];
     this.startButtonClickHandler = this.startButtonClickHandler.bind(this);
     this.mainButtonClickHandler = this.mainButtonClickHandler.bind(this);
@@ -28,6 +29,7 @@ class App extends React.Component {
         </div>
         <PopupMenu 
             isOpen={this.state.isPopupOpen}
+            isClosing={this.isPopupClosing}
             closeButtonClickHandler={this.popupMenuCloseButtonClickHandler.bind(this)} 
         />                
         <Display 
@@ -66,14 +68,20 @@ class App extends React.Component {
     //  - launch popup menu and populate it if there are more than one action
     
     //For now, just open popup menu
-    if(this.state.isPopupOpen === false){
+    this.isPopupClosing = false;
+    
+    if(!this.state.isPopupOpen){
       this.setState((prevState, props)=>({
         isPopupOpen: true
       }));
-    }    
+    }
+              
   }  
   popupMenuCloseButtonClickHandler(event){
     console.log('clicked');
+    
+    this.isPopupClosing = true;
+
     if(this.state.isPopupOpen === true){
       this.setState((prevState, props)=>({
         isPopupOpen: false

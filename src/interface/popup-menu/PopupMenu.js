@@ -4,19 +4,29 @@ import Button from '../buttons/Button.js';
 import './PopupMenu.css';
 
 function PopupMenu(props){
-    let menuClasses = props.isOpen ? "open" : "";    
+    let menuClasses = "";
+    
+    if(props.isOpen){
+        menuClasses += " open";
+    }    
+    if(props.isClosing){
+        menuClasses += " closing";
+    }
+        
     return (        
         <div id="popup-menu" className={menuClasses}>
             <div id="popup-header">
                 <h3>Title</h3>                
             </div>
-            <Button/>
-            <Button/>                                                
-            <Button/>
-            <Button/>
-            <Button/>
-            <Button/>
-            <Button/>
+            <div className="popup-menu-main">
+                <Button label={"Wack that rat real good!"}/>
+                <Button label={"Wack that rat real good!"}/>
+                <Button label={"Wack that rat real good!"}/>
+                <Button label={"Wack that rat real good!"}/>
+                <Button label={"Wack that rat real good!"}/>
+                <Button label={"Wack that rat real good!"}/>
+                <Button label={"Wack that rat real good!"}/>                
+            </div>            
             <div id="popup-nav-bar">
                 <HeaderNavButton id={"btn-nav-back"} label={"Back"} />
                 <HeaderNavButton id={"btn-nav-close"} label={"Close"} clickHandler={props.closeButtonClickHandler}/>                
