@@ -1,10 +1,28 @@
 import React from 'react';
+import StartMenu from '../start-menu/StartMenu.js';
+import MainMenu from '../main-menu/MainMenu.js';
+import ActionMenu from '../action-menu/ActionMenu.js';
 import HeaderNavButton from '../buttons/HeaderNavButton.js';
-import Button from '../buttons/Button.js';
 import './PopupMenu.css';
 
 function PopupMenu(props){
     let menuClasses = "";
+    let menuTitle = "Main Menu";
+    let menuType = props.menuType;
+    let menuItems = "ERROR!";
+
+    if(menuType === window.POPUP_MENU_START){
+        menuTitle = "Start Menu";
+        menuItems = <StartMenu startButtonClickHandler={props.startButtonClickHandler} />;
+    }
+    else if(menuType === window.POPUP_MENU_MAIN){
+        menuTitle = "Main Menu";
+        menuItems = <MainMenu startButtonClickHandler={props.startButtonClickHandler} />;
+    }
+    else if(menuType === window.POPUP_MENU_ACTION){
+        menuTitle = "Actions Menu";
+        menuItems = <ActionMenu />;
+    }
     
     if(props.isOpen){
         menuClasses += " open";
@@ -16,19 +34,11 @@ function PopupMenu(props){
     return (        
         <div id="popup-menu" className={menuClasses}>
             <div id="popup-header">
-                <h3>Title</h3>                
+                <h3>{ menuTitle }</h3>                
             </div>
-            <div className="popup-menu-main">
-                <Button label={"Wack that rat real good!"}/>
-                <Button label={"Wack that rat real good!"}/>
-                <Button label={"Wack that rat real good!"}/>
-                <Button label={"Wack that rat real good!"}/>
-                <Button label={"Wack that rat real good!"}/>
-                <Button label={"Wack that rat real good!"}/>
-                <Button label={"Wack that rat real good!"}/>                
-            </div>            
+            { menuItems }
             <div id="popup-nav-bar">
-                <HeaderNavButton id={"btn-nav-back"} label={"Back"} />
+                <HeaderNavButton id={"btn-nav-back"} label={"Back"} clickHandler={props.backButtonClickHandler}/>
                 <HeaderNavButton id={"btn-nav-close"} label={"Close"} clickHandler={props.closeButtonClickHandler}/>                
             </div>                                                                                                                                                                                                                                                                                               
         </div>    
