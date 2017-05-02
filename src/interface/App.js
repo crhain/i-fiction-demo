@@ -2,7 +2,7 @@
 import React from 'react';
 import './App.css';
 import Display from './display/Display.js';
-import MainMenu from './main-menu/MainMenu.js';
+import NavMenu from './nav-menu/NavMenu.js';
 
 class App extends React.Component {
   constructor(props){
@@ -28,7 +28,7 @@ class App extends React.Component {
             text={{__html: this.state.display}}
             getElementFromDOM={element => this.display = element}
         />
-        <MainMenu 
+        <NavMenu 
           startButtonClickHandler={this.startButtonClickHandler}
           mainButtonClickHandler={this.mainButtonClickHandler}
           actions={ this.state.actions }
