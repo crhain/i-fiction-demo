@@ -10,6 +10,7 @@ class App extends React.Component {
     super(props);    
     this.state = {
       display: "",
+      isPopupOpen: false,
       actions: []
     };    
     this.game = this.props.game; //import game engine through props
@@ -25,7 +26,10 @@ class App extends React.Component {
         <div id="title">
           <h2>I-Fiction: A Fury's Adventure</h2>
         </div>
-        <PopupMenu />                
+        <PopupMenu 
+            isOpen={this.state.isPopupOpen}
+            closeButtonClickHandler={this.popupMenuCloseButtonClickHandler.bind(this)} 
+        />                
         <Display 
             text={{__html: this.state.display}}
             getElementFromDOM={element => this.display = element}
@@ -33,6 +37,7 @@ class App extends React.Component {
         <NavMenu 
           startButtonClickHandler={this.startButtonClickHandler}
           mainButtonClickHandler={this.mainButtonClickHandler}
+          navMenuButtonClickHandler={this.navMenuButtonClickHandler.bind(this)}
           actions={ this.state.actions }
         />                            
       </div>
@@ -50,6 +55,31 @@ class App extends React.Component {
     console.log(results);
     this.addTextToDisplay(results.text + "<br/>");
     this.addActionsToMain(results.actions);    
+  }
+  //This function handles nav menu button clicks
+  navMenuButtonClickHandler(event){
+    //1.need to call a function from this.game that gets possible actions
+    // for current location and scene for each action category
+    //2. for each action button determine if it is
+    //  - disabled: if no actions available
+    //  - directly fire action: if only one action
+    //  - launch popup menu and populate it if there are more than one action
+    
+    //For now, just open popup menu
+    if(this.state.isPopupOpen === false){
+      this.setState((prevState, props)=>({
+        isPopupOpen: true
+      }));
+    }    
+  }  
+  popupMenuCloseButtonClickHandler(event){
+    console.log('clicked');
+    if(this.state.isPopupOpen === true){
+      this.setState((prevState, props)=>({
+        isPopupOpen: false
+      }));
+    }
+
   }
   addTextToDisplay(text){
     let display = this.display;

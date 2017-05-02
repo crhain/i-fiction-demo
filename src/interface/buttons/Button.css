@@ -28,8 +28,8 @@ button:active{
     /*cursor: pointer;*/    
 }
 
-.nav-button{
+.header-nav-button{
     width: 50%;
     height: 50px;
-    background-color: white;
+    background-color: gray;
 }
