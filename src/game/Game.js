@@ -1,3 +1,11 @@
+import Debug from '../debug/Debug.js';
+
+
+//set up custom debuger. 
+const debug = new Debug();
+debug.on = true; //set to true to turn on debugging
+
+
 const Game = {};
 
 var currentGame;
@@ -25,6 +33,7 @@ function start(){
     ];
     let text = "You find yourself in a large room with plush carpeting and fur covered walls.  Mounds and mounds of stuffed animals lay at your feet.";
     //loadData();
+    debug.log("starting game...");
     return {text: text, actions: currentActions};
 }
 
@@ -43,8 +52,8 @@ function loadData(data = window.data){
             currentGame = data;
             currentScene = currentGame.scenes[0];
             currentActions = currentScene.actions;
-            console.log('setting current actions:');
-            console.log(currentActions);
+            debug.log('setting current actions:');
+            debug.log(currentActions);
             textBuffer = currentScene.text;                
         }        
     }

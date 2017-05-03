@@ -1,9 +1,14 @@
 //import React, { Component } from 'react';
+import Debug from '../debug/Debug.js';
 import React from 'react';
 import './App.css';
 import Display from './display/Display.js';
 import NavMenu from './nav-menu/NavMenu.js';
 import PopupMenu from './popup-menu/PopupMenu.js';
+
+//set up custom debuger. 
+const debug = new Debug();
+debug.on = true; //set to true to turn on debugging
 
 class App extends React.Component {
   constructor(props){
@@ -74,7 +79,7 @@ class App extends React.Component {
   setNavButtonState(currentActions){
     //{navigation: 0, items: 0, characters: 0}
     let navButtonCountByType = {navigation: 0, items: 0, characters: 0, main: 1}
-    //console.log('my available game actions are:');
+    debug.log('navButtonCountByType:', navButtonCountByType);
     //console.log(actions);
     for(let i = 0; i < currentActions.length; i++){
       let action = currentActions[i];
@@ -102,8 +107,7 @@ class App extends React.Component {
   }
   //STUB: may need rewrite
   updateAvailableActions(actions){
-    //console.log('setting main actions to:');
-    //console.log(actions);
+    debug.log('updateAvaiableActions(actions)', 'actions:', actions);
     this.setState((prevState, props) =>({ availableActions: actions }));    
   }
   //////////////////////////////////////////////////////////////////////////////////
@@ -120,8 +124,9 @@ class App extends React.Component {
     let targetId = event.target.id;
     let isActive = !event.target.classList.contains('is-inactive');
     let menuType = window.POPUP_MENU_MAIN;
-    console.log('Nav button:');
-    console.log(button);
+    debug.log('navMenuButtonClickHandler(button, event)', 'button:', button);
+    debug.log('event:', event);
+    
 
     //console.log("popup menu info:");
     //console.log(event.target.classList.contains('button'));
