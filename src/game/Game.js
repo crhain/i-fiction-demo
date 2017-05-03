@@ -30,12 +30,10 @@ function start(){
 
 //STUB to return data on key presses
 function doAction(action = {action: 'continue', command: 'continue'}){    
-    if(action.action === 'continue'){
-        currentScene = currentGame.scenes[1];
-    }
-    let displayBuffer = updateSceneText(currentScene.text);
-    currentActions = currentScene.actions;    
-    return {text: displayBuffer, actions: currentActions};    
+   let currentActions;
+   let text;
+
+   return {text: text, actions: currentActions};
 }
 
 //Loads game data and sets everything up

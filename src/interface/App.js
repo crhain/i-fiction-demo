@@ -22,18 +22,18 @@ class App extends React.Component {
       isPopupOpen: false,
       popupMenuType: POPUP_MENU_START,
       activeNavMenuButtons: {navigation: 0, items: 0, characters: 0, main: 1},
-      actions: []
+      availableActions: []
     };    
     //set some class variables
     this.game = this.props.game; //import game engine through props
     this.isPopupClosing = false; //used for playing closing animations on popup menu
-    this.actions = [];
+    this.availableActions = [];
     this.startButtonClickHandler = this.startButtonClickHandler.bind(this);
     this.mainButtonClickHandler = this.mainButtonClickHandler.bind(this);        
   }//end of constructor
   render() {
-    console.log('rendering active nave menu buttons:');
-    console.log(this.state.activeNavMenuButtons);
+    //console.log('rendering active nave menu buttons:');
+    //console.log(this.state.activeNavMenuButtons);
     return (
       <div id="app" className="App">
         <div id="title">
@@ -43,6 +43,7 @@ class App extends React.Component {
             isOpen={this.state.isPopupOpen}
             isClosing={this.isPopupClosing}
             menuType={this.state.popupMenuType}
+            availableActions={this.state.availableActions}
             closeButtonClickHandler={this.popupMenuCloseButtonClickHandler.bind(this)} 
             backButtonClickHandler={this.popupMenuBackButtonClickHandler.bind(this)}
             startButtonClickHandler={this.startButtonClickHandler.bind(this)}
@@ -54,17 +55,18 @@ class App extends React.Component {
         <NavMenu           
           clickHandler={this.navMenuButtonClickHandler.bind(this)}
           actionsByType={this.state.actionsByType}
-          activeNavMenuButtons={this.state.activeNavMenuButtons}
-          actions={ this.state.actions }
+          activeNavMenuButtons={this.state.activeNavMenuButtons}          
         />                            
       </div>
     );
   } //end of render()
 
   //STUB for updating the game interface
-  updateInterfaceWithGameOutput(gameOutput){    
+  updateInterfaceWithGameOutput(gameOutput){
+    this.updateAvailableActions(gameOutput.actions);    
     this.setNavButtonState(gameOutput.actions);
-    this.addTextToDisplay(gameOutput.text + "<br/>" );
+    this.updateDisplay(gameOutput.text + "<br/>" );
+    
     //this.addActionsToMain(results.actions);        
   }
   //STUB:
@@ -85,7 +87,7 @@ class App extends React.Component {
       }));    
   }
   //STUB for updating display text
-  addTextToDisplay(text){
+  updateDisplay(text){
     let display = this.display;
     this.setState((prevState, props)=>({
       display: text
@@ -99,10 +101,10 @@ class App extends React.Component {
     }, 250);    
   }
   //STUB: may need rewrite
-  addActionsToMain(actions){
+  updateAvailableActions(actions){
     //console.log('setting main actions to:');
     //console.log(actions);
-    this.setState((prevState, props) =>({ actions: actions }));    
+    this.setState((prevState, props) =>({ availableActions: actions }));    
   }
   //////////////////////////////////////////////////////////////////////////////////
   //NavMenu event handlers and utility methods
@@ -114,10 +116,13 @@ class App extends React.Component {
     this.addTextToDisplay(results.text + "<br/>");
     this.addActionsToMain(results.actions);    
   }
-  navMenuButtonClickHandler(event){
+  navMenuButtonClickHandler(button, event){
     let targetId = event.target.id;
     let isActive = !event.target.classList.contains('is-inactive');
     let menuType = window.POPUP_MENU_MAIN;
+    console.log('Nav button:');
+    console.log(button);
+
     //console.log("popup menu info:");
     //console.log(event.target.classList.contains('button'));
     //1.need to call a function from this.game that gets possible actions
@@ -128,7 +133,7 @@ class App extends React.Component {
     //  - launch popup menu and populate it if there are more than one action
     event.preventDefault();
     if(isActive){
-      console.log('click');
+      //console.log('click');
       //Determine what to populate popupmenu with
       if(targetId === 'nav-menu-btn-characters'){
         menuType = window.POPUP_MENU_ACTION;
