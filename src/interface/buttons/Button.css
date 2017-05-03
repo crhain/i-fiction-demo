@@ -33,3 +33,23 @@ button:active{
     height: 50px;
     background-color: gray;
 }
+
+/*styles for inactive nav buttons*/
+#nav-menu-btn-navigation.is-inactive, 
+#nav-menu-btn-items.is-inactive, 
+#nav-menu-btn-characters.is-inactive{
+    background-color: #979CB8;    
+}
+
+#nav-menu-btn-navigation.is-inactive:hover, 
+#nav-menu-btn-items.is-inactive:hover, 
+#nav-menu-btn-characters.is-inactive:hover{
+    opacity: 1.0;
+}
+
+#nav-menu-btn-navigation.is-inactive:hover, 
+#nav-menu-btn-items.is-inactive:hover, 
+#nav-menu-btn-characters.is-inactive:hover{
+    box-shadow: none;
+}
+

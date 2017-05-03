@@ -9,11 +9,33 @@ var commands = {};
 //Add game engine methods to Game before exporting game
 Game.start = start;
 Game.doAction = doAction;
+Game.getAvailableActions = getAvailableActions;
 
-//Starts game with currently loaded ata
+//STUB - to get avaiable actions and items from game
+function getAvailableActions(){
+    
+}
+
+//STUB that returns fake data
 function start(){
-    loadData();
-    return {text: currentScene.text, actions: currentActions};
+    let currentActions = [
+            {name: "Kick rat in head!", type: "navigation"},
+            {name: "Flee from rat!", type: "navigation"},
+            {name: "Examine candle", type: "items"}
+    ];
+    let text = "You find yourself in a large room with plush carpeting and fur covered walls.  Mounds and mounds of stuffed animals lay at your feet.";
+    //loadData();
+    return {text: text, actions: currentActions};
+}
+
+//STUB to return data on key presses
+function doAction(action = {action: 'continue', command: 'continue'}){    
+    if(action.action === 'continue'){
+        currentScene = currentGame.scenes[1];
+    }
+    let displayBuffer = updateSceneText(currentScene.text);
+    currentActions = currentScene.actions;    
+    return {text: displayBuffer, actions: currentActions};    
 }
 
 //Loads game data and sets everything up
@@ -33,15 +55,7 @@ function loadData(data = window.data){
     }    
 }
 
-//excutes an action recieved from interface
-function doAction(action = {action: 'continue', command: 'continue'}){    
-    if(action.action === 'continue'){
-        currentScene = currentGame.scenes[1];
-    }
-    let displayBuffer = updateSceneText(currentScene.text);
-    currentActions = currentScene.actions;    
-    return {text: displayBuffer, actions: currentActions};    
-}
+
 
 //sets up game command objects and adds them to commands queue
 function initializeCommands(){

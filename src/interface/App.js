@@ -11,7 +11,7 @@ class App extends React.Component {
     //Set up some constants
     const POPUP_MENU_START = "start";
     const POPUP_MENU_MAIN = "main";
-    const POPUP_MENU_ACTION = "action";
+    const POPUP_MENU_ACTION = "action";    
     //attach them to the window object to make them global
     window.POPUP_MENU_START = POPUP_MENU_START;
     window.POPUP_MENU_MAIN = POPUP_MENU_MAIN;
@@ -21,6 +21,7 @@ class App extends React.Component {
       display: "",
       isPopupOpen: false,
       popupMenuType: POPUP_MENU_START,
+      activeNavMenuButtons: {navigation: 0, items: 0, characters: 0, main: 1},
       actions: []
     };    
     //set some class variables
@@ -28,10 +29,11 @@ class App extends React.Component {
     this.isPopupClosing = false; //used for playing closing animations on popup menu
     this.actions = [];
     this.startButtonClickHandler = this.startButtonClickHandler.bind(this);
-    this.mainButtonClickHandler = this.mainButtonClickHandler.bind(this);
-
+    this.mainButtonClickHandler = this.mainButtonClickHandler.bind(this);        
   }//end of constructor
   render() {
+    console.log('rendering active nave menu buttons:');
+    console.log(this.state.activeNavMenuButtons);
     return (
       <div id="app" className="App">
         <div id="title">
@@ -51,12 +53,57 @@ class App extends React.Component {
         />        
         <NavMenu           
           clickHandler={this.navMenuButtonClickHandler.bind(this)}
+          actionsByType={this.state.actionsByType}
+          activeNavMenuButtons={this.state.activeNavMenuButtons}
           actions={ this.state.actions }
         />                            
       </div>
     );
   } //end of render()
 
+  //STUB for updating the game interface
+  updateInterfaceWithGameOutput(gameOutput){    
+    this.setNavButtonState(gameOutput.actions);
+    this.addTextToDisplay(gameOutput.text + "<br/>" );
+    //this.addActionsToMain(results.actions);        
+  }
+  //STUB:
+  //STUB function for setting state of nav and action popupmenu buttons
+  setNavButtonState(currentActions){
+    //{navigation: 0, items: 0, characters: 0}
+    let navButtonCountByType = {navigation: 0, items: 0, characters: 0, main: 1}
+    //console.log('my available game actions are:');
+    //console.log(actions);
+    for(let i = 0; i < currentActions.length; i++){
+      let action = currentActions[i];
+      navButtonCountByType[action.type]++;      
+    }
+    //console.log('setting nav button state with:');
+    //console.log(navButtonCountByType);
+    this.setState((prevState, props)=>({
+        activeNavMenuButtons: navButtonCountByType
+      }));    
+  }
+  //STUB for updating display text
+  addTextToDisplay(text){
+    let display = this.display;
+    this.setState((prevState, props)=>({
+      display: text
+    }));
+    setTimeout(()=>{
+      let scrollDiff = display.scrollHeight + 4 - display.offsetHeight;    
+      if(scrollDiff > 0){
+          //this sets elements scrollTop value in order to scroll it down to bring overflow content into view
+          display.scrollTop = scrollDiff;
+      }
+    }, 250);    
+  }
+  //STUB: may need rewrite
+  addActionsToMain(actions){
+    //console.log('setting main actions to:');
+    //console.log(actions);
+    this.setState((prevState, props) =>({ actions: actions }));    
+  }
   //////////////////////////////////////////////////////////////////////////////////
   //NavMenu event handlers and utility methods
   ///////////////////////////////////////////////////////////////////////////////////
@@ -69,34 +116,39 @@ class App extends React.Component {
   }
   navMenuButtonClickHandler(event){
     let targetId = event.target.id;
+    let isActive = !event.target.classList.contains('is-inactive');
     let menuType = window.POPUP_MENU_MAIN;
-    console.log("popup menu info:");
-    console.log(targetId);
+    //console.log("popup menu info:");
+    //console.log(event.target.classList.contains('button'));
     //1.need to call a function from this.game that gets possible actions
     // for current location and scene for each action category
     //2. for each action button determine if it is
     //  - disabled: if no actions available
     //  - directly fire action: if only one action
     //  - launch popup menu and populate it if there are more than one action
-    
-    //Determine what to populate popupmenu with
-    if(targetId === 'nav-menu-btn-characters'){
-      menuType = window.POPUP_MENU_ACTION;
-    } else if(targetId === 'nav-menu-btn-items'){
-      menuType = window.POPUP_MENU_ACTION;
-    } else if(targetId === 'nav-menu-btn-navigation'){
-      menuType = window.POPUP_MENU_ACTION;
+    event.preventDefault();
+    if(isActive){
+      console.log('click');
+      //Determine what to populate popupmenu with
+      if(targetId === 'nav-menu-btn-characters'){
+        menuType = window.POPUP_MENU_ACTION;
+      } else if(targetId === 'nav-menu-btn-items'){
+        menuType = window.POPUP_MENU_ACTION;
+      } else if(targetId === 'nav-menu-btn-navigation'){
+        menuType = window.POPUP_MENU_ACTION;
+      }
+      
+      //Open popup menu
+      this.isPopupClosing = false;
+      
+      if(!this.state.isPopupOpen){
+        this.setState((prevState, props)=>({
+          isPopupOpen: true,
+          popupMenuType: menuType
+        }));
+      }
     }
-    
-    //Open popup menu
-    this.isPopupClosing = false;
-    
-    if(!this.state.isPopupOpen){
-      this.setState((prevState, props)=>({
-        isPopupOpen: true,
-        popupMenuType: menuType
-      }));
-    }           
+               
   }  
   //////////////////////////////////////////////////////////////////////////////////
   //PopupMenu event handlers and utility methods
@@ -127,12 +179,8 @@ class App extends React.Component {
   //PopupMenu -> MainMenu event handlers and methods
   ///////////////////////////////////////////////////////////////////////////////////
   startButtonClickHandler(event){
-    let results = this.game.start();
-    console.log('clicked start');
-    //console.log('Add these results in app.js');         
-    //console.log(results);
-    this.addTextToDisplay(results.text + "<br/>" );
-    this.addActionsToMain(results.actions);        
+    let gameOutput = this.game.start();
+    this.updateInterfaceWithGameOutput(gameOutput);    
   }
   //////////////////////////////////////////////////////////////////////////////////
   //PopupMenu -> ActionMenu event handlers and methods
@@ -141,24 +189,7 @@ class App extends React.Component {
   //////////////////////////////////////////////////////////////////////////////////
   //Display event handlers and utility methods
   ///////////////////////////////////////////////////////////////////////////////////
-  addTextToDisplay(text){
-    let display = this.display;
-    this.setState((prevState, props)=>({
-      display: text
-    }));
-    setTimeout(()=>{
-      let scrollDiff = display.scrollHeight + 4 - display.offsetHeight;    
-      if(scrollDiff > 0){
-          //this sets elements scrollTop value in order to scroll it down to bring overflow content into view
-          display.scrollTop = scrollDiff;
-      }
-    }, 250);    
-  }
-  addActionsToMain(actions){
-    console.log('setting main actions to:');
-    console.log(actions);
-    this.setState((prevState, props) =>({ actions: actions }));    
-  }
+  
 } //end of class App
 
 export default App;
