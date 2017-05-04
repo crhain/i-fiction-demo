@@ -1,3 +1,4 @@
+'use strict'
 import Debug from '../debug/Debug.js';
 
 
@@ -8,11 +9,11 @@ debug.on = true; //set to true to turn on debugging
 
 const Game = {};
 
-var currentGame;
-var currentScene;
-var currentActions = [];
-var textBuffer = "";
-var commands = {};
+var currentGame,
+    currentScene,
+    currentActions = [],
+    textBuffer = "",
+    commands = {}; //for command method look up  {changeScene: changeScene, changeLocation: changeLocation, changeLocationText: changeLocationText, etc.}
 
 //Add game engine methods to Game before exporting game
 Game.start = start;
@@ -29,7 +30,8 @@ function start(){
     let currentActions = [
             {name: "Kick rat in head!", type: "navigation"},
             {name: "Flee from rat!", type: "navigation"},
-            {name: "Examine candle", type: "items"}
+            {name: "Examine candle", type: "navigation"},
+            {name: "Examine", type: "items", primaryTargets: ["Candle", "Pile of Stuffed Animals", "Cloak"]}
     ];
     let text = "You find yourself in a large room with plush carpeting and fur covered walls.  Mounds and mounds of stuffed animals lay at your feet.";
     //loadData();

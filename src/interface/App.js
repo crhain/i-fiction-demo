@@ -1,3 +1,4 @@
+'use strict'
 //import React, { Component } from 'react';
 import Debug from '../debug/Debug.js';
 import React from 'react';
@@ -16,14 +17,21 @@ class App extends React.Component {
     //Set up some constants
     const POPUP_MENU_START = "start";
     const POPUP_MENU_MAIN = "main";
-    const POPUP_MENU_ACTION = "action";    
+    const POPUP_MENU_ACTION = "action";
+    const POPUP_MENU_NAVIGATION = "navigation";
+    const POPUP_MENU_ITEMS = "items";
+    const POPUP_MENU_CHARACTERS = "characters";    
     //attach them to the window object to make them global
     window.POPUP_MENU_START = POPUP_MENU_START;
     window.POPUP_MENU_MAIN = POPUP_MENU_MAIN;
     window.POPUP_MENU_ACTION = POPUP_MENU_ACTION;
+    window.POPUP_MENU_NAVIGATION = POPUP_MENU_NAVIGATION;
+    window.POPUP_MENU_ITEMS = POPUP_MENU_ITEMS;
+    window.POPUP_MENU_CHARACTERS = POPUP_MENU_CHARACTERS;    
     //set state 
     this.state = {
       display: "",
+      gameTitle: "A Fury's Adventure",
       isPopupOpen: false,
       popupMenuType: POPUP_MENU_START,
       activeNavMenuButtons: {navigation: 0, items: 0, characters: 0, main: 1},
@@ -32,9 +40,7 @@ class App extends React.Component {
     //set some class variables
     this.game = this.props.game; //import game engine through props
     this.isPopupClosing = false; //used for playing closing animations on popup menu
-    this.availableActions = [];
-    this.startButtonClickHandler = this.startButtonClickHandler.bind(this);
-    this.mainButtonClickHandler = this.mainButtonClickHandler.bind(this);        
+    this.availableActions = [];    
   }//end of constructor
   render() {
     //console.log('rendering active nave menu buttons:');
@@ -42,13 +48,14 @@ class App extends React.Component {
     return (
       <div id="app" className="App">
         <div id="title">
-          <h2>I-Fiction: A Fury's Adventure</h2>
+          <h2>I-Fiction: {this.state.gameTitle}</h2>
         </div>
         <PopupMenu 
             isOpen={this.state.isPopupOpen}
             isClosing={this.isPopupClosing}
             menuType={this.state.popupMenuType}
             availableActions={this.state.availableActions}
+            actionButtonClickHandler={this.actionButtonClickHandler.bind(this)}
             closeButtonClickHandler={this.popupMenuCloseButtonClickHandler.bind(this)} 
             backButtonClickHandler={this.popupMenuBackButtonClickHandler.bind(this)}
             startButtonClickHandler={this.startButtonClickHandler.bind(this)}
@@ -74,7 +81,12 @@ class App extends React.Component {
     
     //this.addActionsToMain(results.actions);        
   }
-  //STUB:
+  //STUB: may need rewrite
+  updateAvailableActions(actions){
+    debug.log('updateAvaiableActions(actions)', 'actions:', actions);
+    this.setState((prevState, props) =>({ availableActions: actions }));    
+  }
+  
   //STUB function for setting state of nav and action popupmenu buttons
   setNavButtonState(currentActions){
     //{navigation: 0, items: 0, characters: 0}
@@ -105,49 +117,37 @@ class App extends React.Component {
       }
     }, 250);    
   }
-  //STUB: may need rewrite
-  updateAvailableActions(actions){
-    debug.log('updateAvaiableActions(actions)', 'actions:', actions);
-    this.setState((prevState, props) =>({ availableActions: actions }));    
-  }
+  
   //////////////////////////////////////////////////////////////////////////////////
   //NavMenu event handlers and utility methods
   ///////////////////////////////////////////////////////////////////////////////////
-
-  mainButtonClickHandler(event){
-    let results = this.game.doAction({action: 'continue'});
-    //console.log(results);
-    this.addTextToDisplay(results.text + "<br/>");
-    this.addActionsToMain(results.actions);    
-  }
   navMenuButtonClickHandler(button, event){
+    //Use button.actionType to figure out which nav button is being clicked
+    // Then set the MenuType of the popup and get the currentActions
+    // to populate the window. Should pass a 'buttonsItem' list to popupwindow
+    // this an array that contains items/actions names to populate buttons with
+    //  each button will recieve a props.item or props.action to track this.
+    // will need to keep track of which popup button is being clicked also
+    // so maybe we create 3 different state values to hold actions for that
+    // nav type along with some information that can be sent back to game
+    // engine in form of a gameInput object
     let targetId = event.target.id;
     let isActive = !event.target.classList.contains('is-inactive');
-    let menuType = window.POPUP_MENU_MAIN;
-    debug.log('navMenuButtonClickHandler(button, event)', 'button:', button);
-    debug.log('event:', event);
-    
-
-    //console.log("popup menu info:");
-    //console.log(event.target.classList.contains('button'));
-    //1.need to call a function from this.game that gets possible actions
-    // for current location and scene for each action category
-    //2. for each action button determine if it is
-    //  - disabled: if no actions available
-    //  - directly fire action: if only one action
-    //  - launch popup menu and populate it if there are more than one action
+    let menuType = window.POPUP_MENU_MAIN;    
     event.preventDefault();
     if(isActive){
-      //console.log('click');
+      debug.log('navMenuButtonClickHandler(button, event)', 'button:', button);
+      debug.log('event:', event);      
       //Determine what to populate popupmenu with
-      if(targetId === 'nav-menu-btn-characters'){
-        menuType = window.POPUP_MENU_ACTION;
-      } else if(targetId === 'nav-menu-btn-items'){
-        menuType = window.POPUP_MENU_ACTION;
-      } else if(targetId === 'nav-menu-btn-navigation'){
-        menuType = window.POPUP_MENU_ACTION;
+      if(button.actionType === window.POPUP_MENU_NAVIGATION){
+        menuType = window.POPUP_MENU_NAVIGATION;
       }
-      
+      else if(button.actionType === window.POPUP_MENU_ITEMS){
+        menuType = window.POPUP_MENU_ITEMS;
+      } 
+      else if(button.actionType === window.POPUP_MENU_CHARACTERS){
+        menuType = window.POPUP_MENU_CHARACTERS;
+      } 
       //Open popup menu
       this.isPopupClosing = false;
       
@@ -163,6 +163,18 @@ class App extends React.Component {
   //////////////////////////////////////////////////////////////////////////////////
   //PopupMenu event handlers and utility methods
   ///////////////////////////////////////////////////////////////////////////////////
+  actionButtonClickHandler(button, event){
+    //get button.items or button.actions or button.characters
+    // and if one of these is set, add to gameInput object
+    // if this button.final is true, then call a handler function that
+    // takes gameInput, sends it to this.game.somemethod and then
+    //  recives a gameOutput object and calls appropriate methods to process it
+
+    //Close popup menu if button is single action
+    //Else populate popup menu with new buttons
+    //Also populate more if 'more' button clicked
+    debug.log('clicked: ' + button.label);    
+  }
   popupMenuBackButtonClickHandler(event){
     //find out how deep into menu we are
     // and if we are on first level, then just close it.
@@ -188,7 +200,8 @@ class App extends React.Component {
   //////////////////////////////////////////////////////////////////////////////////
   //PopupMenu -> MainMenu event handlers and methods
   ///////////////////////////////////////////////////////////////////////////////////
-  startButtonClickHandler(event){
+  startButtonClickHandler(button, event){
+    debug.log('start clicked.');
     let gameOutput = this.game.start();
     this.updateInterfaceWithGameOutput(gameOutput);    
   }

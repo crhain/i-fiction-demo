@@ -10,33 +10,47 @@ function PopupMenu(props){
     let menuTitle = "Main Menu";
     let menuType = props.menuType;
     let menuItems = "ERROR!";
+    //ADD dispatch object instead of using if else; should work now.
 
+    //console.log('action button click handler:');
+    //console.log(props.actionButtonClickHandler);
     if(menuType === window.POPUP_MENU_START){
         menuTitle = "Start Menu";
-        menuItems = <StartMenu startButtonClickHandler={props.startButtonClickHandler} />;
-    }
-    else if(menuType === window.POPUP_MENU_MAIN){
+        menuItems = <StartMenu buttonClickHandler={props.startButtonClickHandler} />;
+    } else if(menuType === window.POPUP_MENU_MAIN){
         menuTitle = "Main Menu";
-        menuItems = <MainMenu startButtonClickHandler={props.startButtonClickHandler} />;
+        menuItems = <MainMenu buttonClickHandler={props.startButtonClickHandler} />;
+    } else if(menuType === window.POPUP_MENU_NAVIGATION){
+        menuTitle = "Navigation Menu";
+        menuItems = <ActionMenu 
+                        actions={props.availableActions} 
+                        menuType={props.menuType}
+                        buttonClickHandler={props.actionButtonClickHandler}/>;
+    } else if(menuType === window.POPUP_MENU_ITEMS){
+        menuTitle = "Items Menu";
+        menuItems = <ActionMenu 
+                        actions={props.availableActions} 
+                        menuType={props.menuType}
+                        buttonClickHandler={props.actionButtonClickHandler}/>;
+    } else if(menuType === window.POPUP_MENU_CHARACTERS){
+        menuTitle = "Characters Menu";
+        menuItems = <ActionMenu 
+                        actions={props.availableActions} 
+                        menuType={props.menuType}
+                        buttonClickHandler={props.actionButtonClickHandler}/>;
     }
-    else if(menuType === window.POPUP_MENU_ACTION){
-        menuTitle = "Actions Menu";
-        menuItems = <ActionMenu />;
-    }
-    
     if(props.isOpen){
         menuClasses += " open";
     }    
     if(props.isClosing){
         menuClasses += " closing";
-    }
-        
+    }   
     return (        
         <div id="popup-menu" className={menuClasses}>
             <div id="popup-header">
                 <h3>{ menuTitle }</h3>                
             </div>
-            { menuItems }
+            { menuItems}
             <div id="popup-nav-bar">
                 <HeaderNavButton id={"btn-nav-back"} label={"Back"} clickHandler={props.backButtonClickHandler}/>
                 <HeaderNavButton id={"btn-nav-close"} label={"Close"} clickHandler={props.closeButtonClickHandler}/>                
