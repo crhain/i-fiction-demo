@@ -173,7 +173,8 @@ class App extends React.Component {
     //Close popup menu if button is single action
     //Else populate popup menu with new buttons
     //Also populate more if 'more' button clicked
-    debug.log('clicked: ' + button.label);    
+    debug.log('clicked: ' + button.label);
+    this.closePopupMenu();    
   }
   popupMenuBackButtonClickHandler(event){
     //find out how deep into menu we are
@@ -203,7 +204,8 @@ class App extends React.Component {
   startButtonClickHandler(button, event){
     debug.log('start clicked.');
     let gameOutput = this.game.start();
-    this.updateInterfaceWithGameOutput(gameOutput);    
+    this.updateInterfaceWithGameOutput(gameOutput); 
+    this.closePopupMenu();   
   }
   //////////////////////////////////////////////////////////////////////////////////
   //PopupMenu -> ActionMenu event handlers and methods
